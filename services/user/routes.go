@@ -47,13 +47,18 @@ func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if !h.store.ValidateRole(*u, payLoad.Role) {
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("user does not have access to given role"))
+		return
+	}
+
 	if !auth.ComparePassword(u.Password, []byte(payLoad.Password)) {
 		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("invalid email or password"))
 		return
 	}
 
 	secret := []byte(config.Envs.JWTSecret)
-	token, err := auth.CreateJWT(secret, u.UserId)
+	token, err := auth.CreateJWT(secret, u.UserId.Hex())
 
 	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("error while creating token"))
@@ -75,7 +80,7 @@ func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
 		Expires: time.Now().Add(time.Hour),
 	})
 
-	utils.WriteJson(w, http.StatusOK, map[string]string{"token": token})
+	utils.WriteJson(w, http.StatusOK, map[string]string{"token": token, "userId": u.UserId.Hex()})
 }
 
 func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
@@ -111,8 +116,8 @@ func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 		LastName:  payLoad.LastName,
 		Email:     payLoad.Email,
 		Password:  hashedPassword,
-		UserName:  payLoad.UserName,
-		Role:      payLoad.Role,
+		//UserName:  payLoad.UserName,
+		Role: payLoad.Role,
 	})
 	//fmt.Print("4")
 

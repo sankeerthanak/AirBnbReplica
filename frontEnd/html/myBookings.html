@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Properties</title>
+    <link rel="stylesheet" href="../bookingStyle.css">
+    <link rel="stylesheet" type="text/css" href="../logoutStyle.css"/>
+
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-logo">
+            <img src="../static/logo.png" alt="Airbnb Logo">
+        </div>
+        <div class="name">
+            <h1 style="color: #ff5a5f;">Airbnb</h1>
+        </div>
+        <div class="navbar-menu">
+            <button class="navbar-button" id="logoutButton" onclick="Logout()">Logout</button>
+        </div>
+        <!-- <div class="navbar-menu">
+            <button class="navbar-button" onclick="showUserBookings()">My Bookings</button>
+        </div> -->
+    </nav>
+
+    <div id="propertiesContainer" class="properties-container" style="margin: 40px;"></div>
+
+    <div id="propertyModal" class="modal">
+        <div class="modal-close">
+            <button onclick="closeModal()">Close</button>
+        </div>
+        <div id="modalContent" class="modal-content"></div>
+        <!-- <div class="button-container">
+            <button class="button" onclick="showBookingForm()">Confirm Booking</button>
+        </div> -->
+    </div>
+
+    <div id="bookingModal" class="modal">
+        <div class="modal-close">
+            <button onclick="closeBookingModal()">Close</button>
+        </div>
+    </div>
+
+    <script src="../services/myBookingService.js"></script>
+    <script type="text/javascript" src="../services/logOut.js"></script>
+
+</body>
+</html>

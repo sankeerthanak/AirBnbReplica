@@ -14,7 +14,7 @@ type BookingStore interface {
 type Booking struct {
 	BookingId    primitive.ObjectID `json:"bookingId" bson:"_id"`
 	PropertyId   string             `json:"propertyId"`
-	NoOfGuests   int                `json:"noofguests"`
+	NoOfGuests   string             `json:"noofguests"`
 	CheckInDate  string             `json:"checkInDate"`
 	CheckOutDate string             `json:"checkOutDate"`
 	UserId       string             `json:"userId"`

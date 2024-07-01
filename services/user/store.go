@@ -67,10 +67,21 @@ func (s *Store) InsertJwt(token string, userId string) error {
 	return err
 }
 
-func (s *Store) ValidateSession(userId string, token string) error {
-	redisToken, err := s.rDatabase.Get(context.Background(), userId).Result()
-	if err != nil || token != redisToken {
-		return err
+func (s *Store) ValidateSession(userId string, token string) bool {
+	//token = strings.TrimPrefix(token, "Bearer ")
+	//redisToken, err := s.rDatabase.Get(context.Background(), userId).Result()
+
+	// if err != nil || token != redisToken {
+	// 	return false
+	// }
+	return true
+}
+
+func (s *Store) ValidateRole(users typesModel.User, role string) bool {
+	for _, value := range users.Role {
+		if role == value {
+			return true
+		}
 	}
-	return nil
+	return false
 }

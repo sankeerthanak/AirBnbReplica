@@ -30,7 +30,7 @@ func initConfig() Config {
 		JWTExpirationInSeconds: getEnvAsInt("JWT_EXP", 7*24*3600),
 		JWTSecret:              getEnv("JWTSecret", "jwtsecret"),
 		Region:                 getEnv("Region", "us-east-1"),
-		S3BucketName:           getEnv("bucket", "Airbnbreplica"),
+		S3BucketName:           getEnv("bucket", "airbnbreplica"),
 	}
 }
 

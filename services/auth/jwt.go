@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -18,12 +19,12 @@ type contextKey string
 
 const UserKey contextKey = "userID"
 
-func CreateJWT(secret []byte, userId primitive.ObjectID) (string, error) {
+func CreateJWT(secret []byte, userId string) (string, error) {
 
 	expiration := time.Second * time.Duration(config.Envs.JWTExpirationInSeconds)
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"userId":       userId.Hex(),
+		"userId":       userId,
 		"expirationAt": time.Now().Add(expiration).Unix(),
 	})
 
@@ -35,7 +36,7 @@ func CreateJWT(secret []byte, userId primitive.ObjectID) (string, error) {
 }
 
 func CreateBearer(secret []byte, userId primitive.ObjectID) (string, error) {
-	token, err := CreateJWT(secret, userId)
+	token, err := CreateJWT(secret, userId.String())
 	if err != nil {
 		return "", err
 	}
@@ -61,19 +62,19 @@ func WithJWTAuth(handlerFunc http.HandlerFunc, store typesModel.UserStore) http.
 		claims := token.Claims.(jwt.MapClaims)
 		userId := claims["userId"].(string)
 
-		u, err := store.GetUserById(userId)
-		if err != nil {
-			log.Printf("failed to get user by id: %v", err)
-			permissionDenied(w)
-			return
-		}
+		// u, err := store.GetUserById(userId)
+		// if err != nil {
+		// 	log.Printf("failed to get user by id: %v", err)
+		// 	permissionDenied(w)
+		// 	return
+		// }
 
 		ctx := r.Context()
-		ctx = context.WithValue(ctx, UserKey, u.UserId)
+		ctx = context.WithValue(ctx, UserKey, userId)
 		r = r.WithContext(ctx)
 
-		err = store.ValidateSession(userId, tokenString)
-		if err != nil {
+		validate := store.ValidateSession(userId, tokenString)
+		if !validate {
 			log.Printf("failed session %v", err)
 			permissionDenied(w)
 			return
@@ -93,6 +94,7 @@ func getTokenFromRequest(r *http.Request) string {
 }
 
 func validateToken(t string) (*jwt.Token, error) {
+	t = strings.TrimPrefix(t, "Bearer ")
 	return jwt.Parse(t, func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])

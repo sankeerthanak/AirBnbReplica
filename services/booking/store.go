@@ -8,6 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ses"
+	"github.com/sankeerthanak/airbnbreplica/config"
 	typesModel "github.com/sankeerthanak/airbnbreplica/types"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -57,17 +58,16 @@ func (s *Store) GetAllBookings() []primitive.M {
 	return bookings
 }
 
-func (s *Store) DeleteBookingById(userId string, bookingId string) (int64, error) {
+func (s *Store) DeleteBookingById(bookingId string) (int64, error) {
 
 	collection := s.database.Collection(CollectionName)
 
 	bid, _ := primitive.ObjectIDFromHex(bookingId)
-	uid, _ := primitive.ObjectIDFromHex(userId)
-	filter := bson.M{"_id": bid, "userId": uid}
+	filter := bson.M{"_id": bid}
 
 	result, err := collection.DeleteOne(context.Background(), filter)
 
-	fmt.Printf("Successfully deleted booking with userId %v", userId)
+	fmt.Printf("Successfully deleted booking")
 
 	res := result.DeletedCount
 
@@ -78,8 +78,8 @@ func (s *Store) GetUserBookingsbyId(userId string) []primitive.M {
 
 	collection := s.database.Collection(CollectionName)
 
-	id, _ := primitive.ObjectIDFromHex(userId)
-	filter := bson.M{"userId": id}
+	//id, _ := primitive.ObjectIDFromHex(userId)
+	filter := bson.M{"userid": userId}
 	cur, err := collection.Find(context.Background(), filter)
 
 	if err != nil {
@@ -123,7 +123,9 @@ func (s *Store) UpdateBookingById(booking typesModel.Booking) error {
 }
 
 func (s *Store) SendEmail(booking typesModel.Booking) error {
-	sess, err := session.NewSession(&aws.Config{})
+	sess, err := session.NewSession(&aws.Config{
+		Region: &config.Envs.Region,
+	})
 	if err != nil {
 		return fmt.Errorf("failed to create AWS session: %v", err)
 	}

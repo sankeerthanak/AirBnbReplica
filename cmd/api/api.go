@@ -6,8 +6,10 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/redis/go-redis/v9"
+	"github.com/sankeerthanak/airbnbreplica/services/booking"
 	"github.com/sankeerthanak/airbnbreplica/services/property"
 	"github.com/sankeerthanak/airbnbreplica/services/user"
+	"github.com/sankeerthanak/airbnbreplica/utils"
 
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -34,11 +36,17 @@ func (s *ApiServer) Run() error {
 	userHandler := user.NewHandler(userStore)
 	userHandler.RegisterRoutes(router)
 
+	bookingStore := booking.NewStore(s.dataBase)
+	bookinHandler := booking.NewHandler(bookingStore, userStore)
+	bookinHandler.RegisterRoutes(router)
+
 	propertyStore := property.NewStore(s.dataBase)
 	propertyHandler := property.NewHandler(propertyStore, userStore)
 	propertyHandler.RegisterRoutes(router)
 
 	log.Println("Listening on", s.address)
 
-	return http.ListenAndServe(s.address, router)
+	return http.ListenAndServe(s.address, utils.EnableCORS(router))
+	//return http.ListenAndServe(s.address, router)
+
 }

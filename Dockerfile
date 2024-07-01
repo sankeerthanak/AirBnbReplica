@@ -14,7 +14,7 @@ RUN go mod download
 RUN go build -o main ./cmd
 
 # Make port 8080 available to the world outside this container
-EXPOSE 8080
+EXPOSE 8081
 
 # Run the executable
 CMD ["./main"]

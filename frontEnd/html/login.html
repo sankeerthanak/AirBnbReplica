@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../style.css"/>
+    <title>AirBnb</title>
+</head>
+
+<body>
+    <h1 style="text-align: center;">Login</h1>
+    <form id="loginForm" style="padding: 25px; border: 3px solid; background-color: rgb(133, 133, 164);">
+        <div>
+            <label> EmailId:</label>
+            <input type="text" id="username" placeholder="Enter your email Id" required>
+
+            <label>Password:</label>
+            <input type="password" id="password" placeholder="Enter password">
+
+            <label>Role:</label>
+            <input type="radio" name="role" value="user">User
+            <input type="radio" name="role" value="admin">Admin<br>
+
+            <button type="submit">Login</button>
+
+            <a href="signUp.html">Register</a>
+        </div>
+    </form>
+</body>
+<script type="text/javascript" src="../services/loginService.js"></script> 
+
+</html>

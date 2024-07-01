@@ -1,0 +1,95 @@
+#RegisterProperty {
+    padding: 25px;
+    border: 3px solid;
+    background-color: rgb(133, 133, 164);
+    width: 800px;
+    margin: 0 auto;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+#RegisterProperty div {
+    display: flex;
+    flex-direction: column;
+}
+#RegisterProperty label {
+    margin: 10px 0 5px;
+}
+#RegisterProperty input[type="text"],
+#RegisterProperty input[type="file"],
+#RegisterProperty textarea,
+/* #RegisterProperty input[type="checkbox"], */
+#RegisterProperty button {
+    margin-bottom: 15px;
+    padding:10px;
+}
+
+#RegisterProperty .checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+#RegisterProperty .checkbox-group label {
+    margin: 0;
+}
+#RegisterProperty input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+#RegisterProperty h3 {
+    margin: 20px 0 10px;
+}
+/* #RegisterProperty input[type="checkbox"] {
+    margin-right: 10px;
+} */
+#RegisterProperty button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+#RegisterProperty button:hover {
+    background-color: #45a049;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #3e21be;
+    padding: 10px 20px;
+}
+
+.navbar-logo img {
+    height: 40px;
+}
+
+.navbar-menu {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-button {
+    background-color: #fff;
+    color: #ff5a5f;
+    border: 1px solid #ff5a5f;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.navbar-button:hover {
+    background-color: #ff5a5f;
+    color: #fff;
+}
+
+
+#submit button{
+    margin: 10px;
+    width: 95%;
+    padding:10px;
+    cursor: pointer;
+    background-color: aliceblue;
+}

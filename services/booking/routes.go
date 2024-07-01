@@ -1,7 +1,6 @@
 package booking
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -10,6 +9,7 @@ import (
 	"github.com/sankeerthanak/airbnbreplica/services/auth"
 	typesModel "github.com/sankeerthanak/airbnbreplica/types"
 	"github.com/sankeerthanak/airbnbreplica/utils"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type Handler struct {
@@ -17,14 +17,14 @@ type Handler struct {
 	userStore typesModel.UserStore
 }
 
-func NewHandler(store typesModel.BookingStore) *Handler {
-	return &Handler{store: store}
+func NewHandler(store typesModel.BookingStore, userStore typesModel.UserStore) *Handler {
+	return &Handler{store: store, userStore: userStore}
 }
 
 func (h *Handler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/Bookings", auth.WithJWTAuth(h.showAllBookings, h.userStore)).Methods("GET")
 	router.HandleFunc("/Booking", auth.WithJWTAuth(h.createBooking, h.userStore)).Methods("POST")
-	router.HandleFunc("/Booking/{userId}/{bookingId}", auth.WithJWTAuth(h.deleteBooking, h.userStore)).Methods("DELETE")
+	router.HandleFunc("/Booking/{bookingId}", auth.WithJWTAuth(h.deleteBooking, h.userStore)).Methods("DELETE")
 	router.HandleFunc("/Booking/{userId}", auth.WithJWTAuth(h.showUserBookings, h.userStore)).Methods("GET")
 	router.HandleFunc("/Booking/{userId}/{bookingId}", auth.WithJWTAuth(h.updateUserBooking, h.userStore)).Methods("POST")
 }
@@ -43,6 +43,7 @@ func (h *Handler) createBooking(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	booking.BookingId = primitive.NewObjectID()
 	err := h.store.InsertBooking(booking)
 	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
@@ -50,7 +51,7 @@ func (h *Handler) createBooking(w http.ResponseWriter, r *http.Request) {
 
 	err = h.store.SendEmail(booking)
 	if err != nil {
-		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("failed to send notification to user"))
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("failed to send notification to user %s", err))
 	}
 
 	utils.WriteJson(w, http.StatusOK, booking)
@@ -80,7 +81,8 @@ func (h *Handler) deleteBooking(w http.ResponseWriter, r *http.Request) {
 		utils.WriteError(w, http.StatusBadRequest, err)
 	}
 
-	json.NewEncoder(w).Encode(params["bookingId"])
+	utils.WriteJson(w, http.StatusOK, "Successfully deleted")
+
 }
 
 func (h *Handler) showUserBookings(w http.ResponseWriter, r *http.Request) {

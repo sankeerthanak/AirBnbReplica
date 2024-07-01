@@ -24,13 +24,14 @@ func NewHandler(store typesModel.PropertyStore, userStore typesModel.UserStore) 
 func (h *Handler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/Property", auth.WithJWTAuth(h.showAllProperties, h.userStore)).Methods("GET")
 	router.HandleFunc("/Property", auth.WithJWTAuth(h.createProperty, h.userStore)).Methods("POST")
+	router.HandleFunc("/Property/{userId}", auth.WithJWTAuth(h.getUserProperties, h.userStore)).Methods("GET")
 	router.HandleFunc("/Property/{propertyId}", auth.WithJWTAuth(h.deleteProperty, h.userStore)).Methods("DELETE")
 	router.HandleFunc("/Property/{propertyId}", auth.WithJWTAuth(h.updateProperty, h.userStore)).Methods("POST")
 }
 
 func (h *Handler) createProperty(w http.ResponseWriter, r *http.Request) {
 
-	userId := auth.GetUserIdFromContext(r.Context())
+	//userId := auth.GetUserIdFromContext(r.Context())
 
 	var property typesModel.Property
 
@@ -44,13 +45,14 @@ func (h *Handler) createProperty(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := h.store.UploadToS3(property.Image, userId)
+	propertyId := primitive.NewObjectID()
+	err := h.store.UploadToS3(property.Image, propertyId.Hex())
 	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
 
-	property.PropertyId = primitive.NewObjectID()
+	property.PropertyId = propertyId
 	err = h.store.CreateProperty(property)
 
 	if err != nil {
@@ -59,9 +61,21 @@ func (h *Handler) createProperty(w http.ResponseWriter, r *http.Request) {
 	utils.WriteJson(w, http.StatusOK, property)
 }
 
+func (h *Handler) getUserProperties(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	properties := h.store.GetPropertiesByUserId(params["userId"])
+
+	if properties == nil {
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("no property found"))
+	}
+
+	utils.WriteJson(w, http.StatusOK, properties)
+}
+
 func (h *Handler) updateProperty(w http.ResponseWriter, r *http.Request) {
 
 	var property typesModel.Property
+	params := mux.Vars(r)
 
 	if err := utils.ParseJson(r, &property); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
@@ -73,7 +87,7 @@ func (h *Handler) updateProperty(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := h.store.UpdateProperty(property.PropertyId.Hex(), property)
+	err := h.store.UpdateProperty(params["propertyId"], property)
 
 	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)

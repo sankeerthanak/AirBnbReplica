@@ -7,7 +7,7 @@ import (
 type PropertyStore interface {
 	CreateProperty(Property) error
 	GetAllProperties() []primitive.M
-	//GetPropertByUserId(string) []primitive.M
+	GetPropertiesByUserId(string) []primitive.M
 	DeleteProperty(string) error
 	// GetProperty(string) Property
 	UpdateProperty(string, Property) error

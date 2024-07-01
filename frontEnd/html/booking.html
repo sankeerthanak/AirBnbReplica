@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Properties</title>
+    <link rel="stylesheet" href="../bookingStyle.css">
+    <link rel="stylesheet" type="text/css" href="../logoutStyle.css"/>
+
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-logo">
+            <img src="../static/logo.png" alt="Airbnb Logo">
+        </div>
+        <div class="name">
+            <h1 style="color: #ff5a5f;">Airbnb</h1>
+        </div>
+        <div class="navbar-menu">
+            <button class="navbar-button" onclick="showUserBookings()">My Bookings</button>
+            <button class="navbar-button" id="logoutButton" onclick="Logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div id="propertiesContainer" class="properties-container" style="margin: 40px;"></div>
+
+    <div id="propertyModal" class="modal">
+        <div class="modal-close">
+            <button onclick="closeModal()">Close</button>
+        </div>
+        <div id="modalContent" class="modal-content"></div>
+        <!-- <div class="button-container">
+            <button class="button" onclick="showBookingForm()">Confirm Booking</button>
+        </div> -->
+    </div>
+
+    <div id="bookingModal" class="modal">
+        <div class="modal-close">
+            <button onclick="closeBookingModal()">Close</button>
+        </div>
+        <form id="bookingForm" class="modal-content">
+            <label for="noOfGuests">Number of Guests:</label>
+            <input type="number" id="noOfGuests" name="noOfGuests" required>
+
+            <label for="checkInDate">Check-in Date:</label>
+            <input type="date" id="checkInDate" name="checkInDate" required>
+
+            <label for="checkOutDate">Check-out Date:</label>
+            <input type="date" id="checkOutDate" name="checkOutDate" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="message">Message:</label>
+            <textarea id="message" name="message"></textarea>
+
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" name="amount" required>
+
+            <div class="button-container">
+                <button type="button" class="button" onclick="submitBooking()">Submit Booking</button>
+            </div>
+        </form>
+    </div>
+
+    <script type="text/javascript" src="../services/bookingService.js"></script>
+    <script type="text/javascript" src="../services/logOut.js"></script>
+
+    
+</body>
+</html>

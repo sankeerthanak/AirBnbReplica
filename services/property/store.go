@@ -63,9 +63,28 @@ func (s *Store) GetAllProperties() []primitive.M {
 	return properties
 }
 
-// func (s *Store) GetPropertByUserId(userId string) typesModel.Property {
+func (s *Store) GetPropertiesByUserId(userId string) []primitive.M {
+	collection := s.database.Collection(CollectionName)
+	filter := bson.M{"userId": userId}
+	cur, err := collection.Find(context.Background(), filter)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-// }
+	var properties []primitive.M
+
+	for cur.Next(context.Background()) {
+		var property bson.M
+		err := cur.Decode(&property)
+		if err != nil {
+			log.Fatal(err)
+		}
+		properties = append(properties, property)
+	}
+
+	defer cur.Close(context.Background())
+	return properties
+}
 
 func (s *Store) DeleteProperty(propertyId string) error {
 
@@ -88,11 +107,12 @@ func (s *Store) DeleteProperty(propertyId string) error {
 
 func (s *Store) UpdateProperty(propertyId string, listing typesModel.Property) error {
 	collection := s.database.Collection(CollectionName)
-	filter := bson.M{"PropertyId": propertyId}
-	update := bson.M{"$set": bson.M{"Title": listing.Title, "Description": listing.Description, "StreetAddr": listing.StreetAddr, "City": listing.City, "Country": listing.Country, "ZipCode": listing.ZipCode, "Bedrooms": listing.Bedrooms, "Bathrooms": listing.Bathrooms,
-		"Accomodates": listing.Accomodates, "Currency": listing.Currency, "Price": listing.Price, "MinStay": listing.MinStay,
-		"MaxStay": listing.MaxStay, "PropertyType.PrivateBed": listing.PropertyType.PrivateBed, "PropertyType.Whole": listing.PropertyType.Whole,
-		"PropertyType.Shared": listing.PropertyType.Shared, "Amenities.Ac": listing.Amenities.Ac, "Amenities.Heater": listing.Amenities.Heater, "Amenities.TV": listing.Amenities.TV, "Amenities.Wifi": listing.Amenities.Wifi, "Spaces.Kitchen": listing.Spaces.Kitchen, "Spaces.Closets": listing.Spaces.Closets, "Spaces.Parking": listing.Spaces.Parking, "Spaces.Gym": listing.Spaces.Gym, "Spaces.Pool": listing.Spaces.Pool}}
+	id, _ := primitive.ObjectIDFromHex(propertyId)
+	filter := bson.M{"propertyId": id}
+	update := bson.M{"$set": bson.M{"title": listing.Title, "description": listing.Description, "StreetAddr": listing.StreetAddr, "City": listing.City, "Country": listing.Country, "ZipCode": listing.ZipCode, "Bedrooms": listing.Bedrooms, "Bathrooms": listing.Bathrooms,
+		"accomodates": listing.Accomodates, "currency": listing.Currency, "price": listing.Price, "minStay": listing.MinStay,
+		"maxStay": listing.MaxStay, "propertyType.privateBed": listing.PropertyType.PrivateBed, "PropertyType.whole": listing.PropertyType.Whole,
+		"PropertyType.shared": listing.PropertyType.Shared, "amenities.ac": listing.Amenities.Ac, "amenities.heater": listing.Amenities.Heater, "amenities.tv": listing.Amenities.TV, "amenities.wifi": listing.Amenities.Wifi, "spaces.kitchen": listing.Spaces.Kitchen, "spaces.closets": listing.Spaces.Closets, "spaces.parking": listing.Spaces.Parking, "spaces.gym": listing.Spaces.Gym, "spaces.pool": listing.Spaces.Pool}}
 
 	_, err := collection.UpdateOne(context.Background(), filter, update)
 
