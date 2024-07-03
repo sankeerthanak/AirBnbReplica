@@ -1,3 +1,5 @@
+const API_BASE_URL_PUBLIC = window.config.API_BASE_URL_PUBLIC;
+
 document.getElementById('SignUpForm').addEventListener('submit', function(event) {
     event.preventDefault(); 
 
@@ -17,7 +19,7 @@ document.getElementById('SignUpForm').addEventListener('submit', function(event)
 
 
     if(password===cnfrmPassword){
-        fetch('http://localhost:8081/register', {
+        fetch(`${API_BASE_URL_PUBLIC}/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  namespace: default  # Ensure you're deploying in the correct namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: gcr.io/speedy-aurora-428310-u4/backend:latest
+        ports:
+        - containerPort: 8081
+        env:
+        - name: REDIS_HOST
+          value: "redis-service"
+      imagePullSecrets:
+      - name: regcred

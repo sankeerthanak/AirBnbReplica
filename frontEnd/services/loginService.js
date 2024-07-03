@@ -1,3 +1,5 @@
+const API_BASE_URL_PUBLIC = window.config.API_BASE_URL_PUBLIC;
+
 document.getElementById('loginForm').addEventListener('submit', function(event) {
     event.preventDefault(); 
 
@@ -5,7 +7,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     const password = document.getElementById('password').value;
     let role=document.querySelector('input[name="role"]:checked').value;
 
-    fetch('http://localhost:8081/login', {
+    fetch(`${API_BASE_URL_PUBLIC}/login`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

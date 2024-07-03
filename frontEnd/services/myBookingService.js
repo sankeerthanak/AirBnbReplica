@@ -1,3 +1,5 @@
+const API_BASE_URL_PUBLIC = window.config.API_BASE_URL_PUBLIC;
+
 const propertiesData=JSON.parse(localStorage.getItem('properties'))
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -14,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 function fetchProperties() {
-    fetch('http://localhost:8081/Booking/'+localStorage.getItem('UserId'), {
+    fetch(`${API_BASE_URL_PUBLIC}/Booking/`+localStorage.getItem('UserId'), {
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -115,7 +117,7 @@ function showPropertyDetails(property,bookingId) {
 function cancelBooking(bookingId){
     const confirmation = confirm(`Do you want to cancel the booking "?`);
     if (confirmation) {
-        fetch('http://localhost:8081/Booking/'+bookingId, {
+        fetch(`${API_BASE_URL_PUBLIC}\\`+bookingId, {
             method:'DELETE',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,

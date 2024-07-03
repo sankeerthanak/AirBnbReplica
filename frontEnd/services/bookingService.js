@@ -1,3 +1,5 @@
+const API_BASE_URL_PUBLIC = window.config.API_BASE_URL_PUBLIC;
+
 document.addEventListener('DOMContentLoaded', () => {
     // Assuming the user is logged in and the token is stored in localStorage
     const token = localStorage.getItem('token');
@@ -13,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 let properties=null;
 
 function fetchProperties() {
-    fetch('http://localhost:8081/Property', {
+    fetch(`${API_BASE_URL_PUBLIC}/Property`, {
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -139,7 +141,7 @@ function submitBooking() {
 
    const confirmation = confirm(`Do you want to book the property "?`);
     if (confirmation) {
-        fetch('http://localhost:8081/Booking', {
+        fetch(`${API_BASE_URL_PUBLIC}/Booking`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,

@@ -1,3 +1,5 @@
+const API_BASE_URL_PUBLIC = window.config.API_BASE_URL_PUBLIC;
+
 document.addEventListener('DOMContentLoaded', () => {
     // Assuming the user is logged in and the token is stored in localStorage
     const token = localStorage.getItem('token');
